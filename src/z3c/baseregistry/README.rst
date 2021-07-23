@@ -12,10 +12,10 @@ Motivation
 
 The current state of the component architecture allows us to
 
-(1) create a global components registry, populate it using ZCML, and use it
+1.  create a global components registry, populate it using ZCML, and use it
     via the ``zope.component`` API functions.
 
-(2) define local sites (local components registries), populate them with local
+2.  define local sites (local components registries), populate them with local
     (persistent) components, and use them selectively based on location --
     commonly defined by the path of the URL.
 
@@ -26,14 +26,14 @@ process.
 However, on the other hand we have a very advanced UI configuration system
 that involves views, resources, layers and skins. So let's compare the two.
 
-(1) Views/Resources in the UI are like registered components in the component
+1.  Views/Resources in the UI are like registered components in the component
     architecture.
 
-(2) Skin Layers in the UI behave very much like registries. The default skin
+2.  Skin Layers in the UI behave very much like registries. The default skin
     is like the global base registry. Skins, like local sites, are activated
     during traversal, but can be populated using ZCML.
 
-(3) Layers are really base layers to the skin layer. The equivalent in the
+3.  Layers are really base layers to the skin layer. The equivalent in the
     component architecture is to specify bases for a components registry,
     which is possible since the Great Component Architecture refactoring for
     Zope 3.3 in 2006.
@@ -55,13 +55,13 @@ example, it would be simple to integrate the ``zope:registerIn`` directive
 If the above text is too dry and theoretical for you, here is the
 summary. This package
 
-(1) implements Steve Alexander's long dream (at least 3 years) of defining
+1.  implements Steve Alexander's long dream (at least 3 years) of defining
     local sites via ZCML.
 
-(2) solves all of my (Stephan Richter) problems I am having with a complex
+2.  solves all of my (Stephan Richter) problems I am having with a complex
     Application Service Provider (ASP) setup.
 
-(3) implements a missing feature that you and everyone else really wanted,
+3.  implements a missing feature that you and everyone else really wanted,
     even if you did not know it yet.
 
 Thanks goes to Jim Fulton, whose outstanding design of the
@@ -102,19 +102,17 @@ One feature of global registries must be that they pickle efficiently, since
 they can be referenced in persisted objects. As you can see, the base registry
 pickles quite well:
 
-  >>> import cPickle
-  >>> jar = cPickle.dumps(myRegistry)
-  >>> len(jar)
-  100
+  >>> import pickle
+  >>> jar = pickle.dumps(myRegistry, 2)
+  >>> len(jar) <= 100
+  True
 
 However, when reading the jar, we get an error:
 
-  >>> cPickle.loads(jar)
+  >>> pickle.loads(jar)
   Traceback (most recent call last):
   ...
-  ComponentLookupError: (ComponentLookupError(<InterfaceClass zope.interface.interfaces.IComponents>, 'myRegistry'),
-                         <function BC at ...>,
-                         (<BaseGlobalComponents base>, 'myRegistry'))
+  zope.interface.interfaces.ComponentLookupError: (<InterfaceClass zope.interface.interfaces.IComponents>, 'myRegistry')
 
 This is because we have not registered the registry in its parent as an
 ``IComponents`` utility, yet:
@@ -122,7 +120,7 @@ This is because we have not registered the registry in its parent as an
   >>> from zope.component.interfaces import IComponents
   >>> zope.component.provideUtility(myRegistry, IComponents, 'myRegistry')
 
-  >>> cPickle.loads(jar)
+  >>> pickle.loads(jar)
   <BaseComponents myRegistry>
 
 Thus it is very important that you *always* register your base registry with
@@ -159,6 +157,7 @@ The registry is then registered using the standard utility directive. After
 loading the meta directives for this package,
 
   >>> from zope.configuration import xmlconfig
+  >>> from zope.configuration.config import ConfigurationConflictError
   >>> context = xmlconfig.string('''
   ... <configure i18n_domain="zope">
   ...   <include package="z3c.baseregistry" file="meta.zcml" />
@@ -198,8 +197,8 @@ register:
   >>> class IExample(zope.interface.Interface):
   ...     name = zope.interface.Attribute('Name of Example')
 
-  >>> class Example(object):
-  ...     zope.interface.implements(IExample)
+  >>> @zope.interface.implementer(IExample)
+  ... class Example(object):
   ...     def __init__(self, name):
   ...         self.name = name
   ...     def __repr__(self):
@@ -229,16 +228,16 @@ Create some adapters we can register:
   ... def adapter2(context):
   ...     return "adapted2"
 
-  >>> class ToAdapt1(object):
-  ...     zope.interface.implements(IToAdapt1)
+  >>> @zope.interface.implementer(IToAdapt1)
+  ... class ToAdapt1(object):
   ...     def __init__(self, name):
   ...         self.name = name
   ...     def __repr__(self):
   ...         return '<%s %r>' %(self.__class__.__name__, self.name)
   >>> toAdapt1 = ToAdapt1('toAdapt1')
 
-  >>> class ToAdapt2(object):
-  ...     zope.interface.implements(IToAdapt2)
+  >>> @zope.interface.implementer(IToAdapt2)
+  ... class ToAdapt2(object):
   ...     def __init__(self, name):
   ...         self.name = name
   ...     def __repr__(self):
@@ -277,7 +276,7 @@ registry:
   >>> zope.component.getUtility(IExample, name="example2")
   Traceback (most recent call last):
   ...
-  ComponentLookupError: (<InterfaceClass README.IExample>, 'example2')
+  zope.interface.interfaces.ComponentLookupError: (<InterfaceClass README.IExample>, 'example2')
 
 Let's now make sure that the adapters have been registered in the right
 registry:
@@ -288,7 +287,7 @@ registry:
   >>> zope.component.getAdapter(toAdapt2, IAdapted, name="adapter2")
   Traceback (most recent call last):
   ...
-  ComponentLookupError: (<ToAdapt2 'toAdapt2'>, <InterfaceClass README.IAdapted>, 'adapter2')
+  zope.interface.interfaces.ComponentLookupError: (<ToAdapt2 'toAdapt2'>, <InterfaceClass README.IAdapted>, 'adapter2')
 
 
   >>> custom = zope.component.getUtility(IComponents, name='custom')
@@ -296,7 +295,7 @@ registry:
   >>> custom.getUtility(IExample, name="example1")
   Traceback (most recent call last):
   ...
-  ComponentLookupError: (<InterfaceClass README.IExample>, 'example1')
+  zope.interface.interfaces.ComponentLookupError: (<InterfaceClass README.IExample>, 'example1')
 
   >>> custom.getUtility(IExample, name="example2")
   <Example 'example2'>
@@ -305,7 +304,7 @@ registry:
   >>> custom.getAdapter(toAdapt1, IAdapted, name="adapter1")
   Traceback (most recent call last):
   ...
-  ComponentLookupError: (<ToAdapt1 'toAdapt1'>, <InterfaceClass README.IAdapted>, 'adapter1')
+  zope.interface.interfaces.ComponentLookupError: (<ToAdapt1 'toAdapt1'>, <InterfaceClass README.IAdapted>, 'adapter1')
 
   >>> custom.getAdapter(toAdapt2, IAdapted, name="adapter2")
   'adapted2'
@@ -365,7 +364,7 @@ Now only registrations from the base site are available:
   >>> sm.getUtility(IExample, name="example2")
   Traceback (most recent call last):
   ...
-  ComponentLookupError: (<InterfaceClass README.IExample>, 'example2')
+  zope.interface.interfaces.ComponentLookupError: (<InterfaceClass README.IExample>, 'example2')
 
   >>> sm.getAdapter(toAdapt1, IAdapted, name="adapter1")
   'adapted1'
@@ -373,7 +372,7 @@ Now only registrations from the base site are available:
   >>> sm.getAdapter(toAdapt2, IAdapted, name="adapter2")
   Traceback (most recent call last):
   ...
-  ComponentLookupError: (<ToAdapt2 'toAdapt2'>, <InterfaceClass README.IAdapted>, 'adapter2')
+  zope.interface.interfaces.ComponentLookupError: (<ToAdapt2 'toAdapt2'>, <InterfaceClass README.IAdapted>, 'adapter2')
 
 But if we add the "custom" registry, then things look more interesting:
 
@@ -426,7 +425,8 @@ Duplicate Registrations
 
 Like before, duplicate registrations are detected and reported:
 
-  >>> context = xmlconfig.string('''
+  >>> try:
+  ...    xmlconfig.string('''
   ... <configure xmlns="http://namespaces.zope.org/zope" i18n_domain="zope">
   ...
   ...   <registerIn registry="README.custom">
@@ -436,11 +436,10 @@ Like before, duplicate registrations are detected and reported:
   ...
   ... </configure>
   ... ''', context=context)
-  Traceback (most recent call last):
-  ...
-  ConfigurationConflictError: Conflicting configuration actions
-      For: (<BaseComponents custom>,
-            ('utility', <InterfaceClass README.IExample>, u'default'))
+  ... except ConfigurationConflictError as e:
+  ...    print(e)
+  Conflicting configuration actions
+    For: (<BaseComponents custom>, ('utility', <InterfaceClass README.IExample>, ...'default'))
   ...
 
 But as we have seen before, no duplication error is raised, if the same
@@ -536,7 +535,8 @@ allowing to nest ``zope:registerIn`` directives, because the logic of
 manipulating the discriminator would be very complex for very little added
 benefit.
 
-  >>> context = xmlconfig.string('''
+  >>> try:
+  ...    xmlconfig.string('''
   ... <configure xmlns="http://namespaces.zope.org/zope" i18n_domain="zope">
   ...
   ...   <registerIn registry="README.custom">
@@ -547,10 +547,10 @@ benefit.
   ...
   ... </configure>
   ... ''', context=context)
-  Traceback (most recent call last):
-  ...
-  ZopeXMLConfigurationError: File "<string>", line 5...
-    ConfigurationError: Nested ``registerIn`` directives are not permitted.
+  ... except Exception as e:
+  ...     print(e)
+  File...
+      ConfigurationError: Nested ``registerIn`` directives are not permitted.
 
 Cleanup
 ~~~~~~~
@@ -576,40 +576,40 @@ solution non-monolithic. Here are some design ideas:
 
 1. A Special Discriminator Prefix
 
-All directives that globally manipulate the state of the system and do not
-register a component have as their first discriminator entry a special
-string, like "StateChange". The directive can then look for those entries and
-not change the discriminator at this point.
+   All directives that globally manipulate the state of the system and do not
+   register a component have as their first discriminator entry a special
+   string, like "StateChange". The directive can then look for those entries and
+   not change the discriminator at this point.
 
-Advantages include the ability to use those directives inside the
-``registerIn`` directive and allow gradual upgrading. In the other hand, util
-directives are adjusted, conflict resolution will not be available for those
-scenarios.
+   Advantages include the ability to use those directives inside the
+   ``registerIn`` directive and allow gradual upgrading. In the other hand, util
+   directives are adjusted, conflict resolution will not be available for those
+   scenarios.
 
 2. A Registry of Global Action Callables
 
-Here this package provides a registry of callables that change the state of
-the system. Directive authors can then subscribe their callables to this
-registry.
+   Here this package provides a registry of callables that change the state of
+   the system. Directive authors can then subscribe their callables to this
+   registry.
 
-The big advantage of this approach is that you can make it work now for all
-built-in directives without changing any implementation. The disadvantage is
-that the solution hides the problem to directive authors, so that detailed
-documentation must be provided to ensure integrity and avoid
-surprises. Another disadvantage is the complexity of yet another registry.
+   The big advantage of this approach is that you can make it work now for all
+   built-in directives without changing any implementation. The disadvantage is
+   that the solution hides the problem to directive authors, so that detailed
+   documentation must be provided to ensure integrity and avoid
+   surprises. Another disadvantage is the complexity of yet another registry.
 
 3. Autodetection with False-Positives
 
-As far as I can tell, all actions that manipulate the components registries
-use the ``zope.component.zcml.handler`` function. Okay, so that allows me to
-detect those. Unfortunately, there might be directives that do *not*
-manipulate the state, for example ensuring the existence of something. There
-are a bunch of those directives in the core.
+   As far as I can tell, all actions that manipulate the components registries
+   use the ``zope.component.zcml.handler`` function. Okay, so that allows me to
+   detect those. Unfortunately, there might be directives that do *not*
+   manipulate the state, for example ensuring the existence of something. There
+   are a bunch of those directives in the core.
 
-The advantage here is that for the core it should just work. However, 3rd
-party directive developers might be tripped by this feature. Also, we could
-only issue warnings with this solution and probably need to be able to turn
-them off.
+   The advantage here is that for the core it should just work. However, 3rd
+   party directive developers might be tripped by this feature. Also, we could
+   only issue warnings with this solution and probably need to be able to turn
+   them off.
 
 I have not implemented any of those suggestions, waiting for input from the
 community.

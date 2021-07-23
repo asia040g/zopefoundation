@@ -13,7 +13,6 @@
 ##############################################################################
 """Base Components support
 
-$Id$
 """
 __docformat__ = "reStructuredText"
 from zope.component import globalregistry, interfaces
