@@ -12,67 +12,101 @@
 #
 ##############################################################################
 """Setup
-
-$Id$
 """
 import os
 from setuptools import setup, find_packages
 
 def read(*rnames):
-    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    with open(os.path.join(os.path.dirname(__file__), *rnames)) as f:
+        return f.read()
+
+tests_require = [
+    'zope.app.appsetup',
+    'zope.app.authentication',
+    'zope.app.basicskin >= 4.0.0',
+    'zope.app.container >= 4.0.0',
+    'zope.app.form >= 5.0.0',
+    'zope.app.publisher',
+    'zope.app.publication',
+    'zope.app.rotterdam >= 4.0.0',
+    'zope.app.schema >= 4.0.0',
+    'zope.app.wsgi',
+
+    'zope.browserpage',
+    'zope.browserresource',
+    'zope.container',
+    'zope.formlib',
+    'zope.login',
+    'zope.principalannotation',
+    'zope.principalregistry',
+    'zope.publisher',
+    'zope.securitypolicy',
+    'zope.testbrowser >= 5.2',
+    'zope.testing',
+    'zope.testrunner',
+    'zope.traversing >= 4.1.0',
+
+    'webtest',
+]
 
 setup (
-    name = "z3c.baseregistry",
-    version='2.0.1dev',
-    author = "Stephan Richter, Roger Ineichen and the Zope Community",
-    author_email = "zope-dev@zope.org",
-    description = "Manage IComponents instances using Python code and ZCML.",
+    name="z3c.baseregistry",
+    version='2.1.0.dev0',
+    author="Stephan Richter, Roger Ineichen and the Zope Community",
+    author_email="zope-dev@zope.org",
+    description="Manage IComponents instances using Python code and ZCML.",
     long_description=(
-        read('README.txt')
+        read('README.rst')
         + '\n\n' +
         'Detailed Documentation\n'
         '**********************'
         + '\n\n' +
-        read('src', 'z3c', 'baseregistry', 'README.txt')
+        read('src', 'z3c', 'baseregistry', 'README.rst')
         + '\n\n' +
-        read('CHANGES.txt')
+        read('CHANGES.rst')
         ),
-    license = "ZPL 2.1",
-    keywords = "zope3 z3c component global registry baseregistry",
-    classifiers = [
+    license="ZPL 2.1",
+    keywords="zope3 z3c component global registry baseregistry",
+    classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Zope Public License',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: Implementation :: CPython',
+        'Programming Language :: Python :: Implementation :: PyPy',
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
-        'Framework :: Zope3'],
-    url = 'http://pypi.python.org/pypi/z3c.baseregistry',
-    packages = find_packages('src'),
-    include_package_data = True,
-    package_dir = {'':'src'},
-    namespace_packages = ['z3c'],
-    extras_require = dict(
-        test=[
-            'zope.app.testing',
-            'zope.testing',
+        'Framework :: Zope3'
+    ],
+    url='http://github.com/zopefoundation/z3c.baseregistry',
+    packages=find_packages('src'),
+    include_package_data=True,
+    package_dir={'': 'src'},
+    namespace_packages=['z3c'],
+    extras_require={
+        'test': tests_require,
+        'zmi': [
             'zope.formlib',
-            ],
-        zmi=[
-            'zope.formlib',
-            'zope.app.zcmlfiles',
-            ]
-        ),
-    install_requires = [
+        ],
+    },
+    tests_require=tests_require,
+    install_requires=[
         'setuptools',
-        'zope.component >= 3.9.4',
-        'zope.configuration >= 3.8.0',
-        'zope.i18nmessageid',
+        'zope.component[hook,zcml] >= 4.3.0',
+        'zope.configuration >= 4.1.0',
+        'zope.i18nmessageid >= 2.2',
         'zope.interface',
         'zope.schema',
         'zope.site',
-        ],
-    zip_safe = False,
-    )
+    ],
+    zip_safe=False,
+)

@@ -13,7 +13,6 @@
 ##############################################################################
 """ZCML Implementation to populate base registries.
 
-$Id$
 """
 __docformat__ = "reStructuredText"
 import zope.interface
@@ -60,11 +59,11 @@ class ActionsProxy(object):
         return action
 
     def __setitem__(self, i, item):
-        self.original.__setitem__(i, self.__decorate(item))
-
-    def __setslice__(self, i, j, other):
-        other = [self.__decorate(item) for item in other]
-        self.original.__setslice__(i, j, other)
+        if isinstance(i, slice):
+            item = [self.__decorate(x) for x in item]
+        else:
+            item = self.__decorate(item)
+        self.original.__setitem__(i, item)
 
     def __iadd__(self, other):
         other = [self.__decorate(item) for item in other]
@@ -79,6 +78,9 @@ class ActionsProxy(object):
     def extend(self, other):
         other = [self.__decorate(item) for item in other]
         self.original.extend(other)
+
+    def __len__(self):
+        return len(self.original)
 
     def __getattr__(self, name):
         return getattr(self.original, name)

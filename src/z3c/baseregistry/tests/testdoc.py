@@ -13,28 +13,35 @@
 ##############################################################################
 """Base Components test setup
 
-$Id$
 """
+
 __docformat__ = "reStructuredText"
 import doctest
 import unittest
-from zope.app.testing import placelesssetup, setup
+from zope.testing import renormalizing
+from zope.testing.cleanup import CleanUp
+from zope.component.testing import tearDown
+from zope.testing import module
 
 def setUp(test):
-    placelesssetup.setUp(test)
-    setup.setUpTestAsModule(test, name='README')
+    CleanUp().setUp()
+    module.setUp(test, name='README')
 
 def tearDown(test):
-    placelesssetup.tearDown(test)
+    module.tearDown(test, name='README')
+    CleanUp().tearDown()
 
 def test_suite():
     return unittest.TestSuite((
             doctest.DocFileSuite(
-                '../README.txt',
+                '../README.rst',
                 setUp=setUp, tearDown=tearDown,
-                optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-                ),
-            ))
+                optionflags=(doctest.NORMALIZE_WHITESPACE
+                             | doctest.ELLIPSIS
+                             | renormalizing.IGNORE_EXCEPTION_MODULE_IN_PYTHON2),
+                checker=renormalizing.RENormalizing(),
+            ),
+    ))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

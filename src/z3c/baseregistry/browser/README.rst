@@ -15,7 +15,8 @@ By setting the root folder site as the current site, we can simulate the
 behavior of calling from within the root folder:
 
   >>> import zope.component
-  >>> from zope.site import hooks
+  >>> from zope.component import hooks
+  >>> hooks.setHooks()
 
   >>> site = getRootFolder()
   >>> hooks.setSite(site)
@@ -31,13 +32,13 @@ behavior of calling from within the root folder:
   >>> zope.component.getUtility(IExample, name="example4")
   Traceback (most recent call last):
   ...
-  ComponentLookupError:
-      (<InterfaceClass z3c.baseregistry.browser.ftests.IExample>, 'example4')
+  zope.interface.interfaces.ComponentLookupError: (<InterfaceClass z3c.baseregistry.browser.tests.IExample>, 'example4')
 
 Let's now add the "custom" registry to the site as a base. After logging in ..
 
-  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.testbrowser.wsgi import Browser
   >>> manager = Browser()
+  >>> manager.handleErrors = False
   >>> manager.addHeader('Authorization', 'Basic mgr:mgrpw')
 
   >>> manager.open('http://localhost/manage')
@@ -69,7 +70,11 @@ Now, "example4" should be available, but "example3" is overridden by
   >>> zope.component.getUtility(IExample, name="example4")
   <Example 'example4'>
 
-However, if we change the order of the bases,
+However, if we change the order of the bases (starting from a fresh state),
+
+  >>> manager.open('http://localhost/manage')
+  >>> manager.getLink('Manage Site').click()
+  >>> manager.getLink('Bases').click()
 
   >>> addBasesSelection(manager, ['custom', '-- Global Base Registry --'])
   >>> manager.getControl('Apply').click()
@@ -89,3 +94,17 @@ then "custom" registry overrides entries from the global base registry:
 
   >>> zope.component.getUtility(IExample, name="example4")
   <Example 'example4'>
+
+We can return to our original state:
+
+  >>> manager.open('http://localhost/manage')
+  >>> manager.getLink('Manage Site').click()
+  >>> manager.getLink('Bases').click()
+
+  >>> addBasesSelection(manager, ['-- Global Base Registry --'])
+  >>> manager.getControl('Apply').click()
+
+  >>> site.getSiteManager().__bases__
+  (<BaseGlobalComponents base>,)
+
+  >>> hooks.setSite(None)
