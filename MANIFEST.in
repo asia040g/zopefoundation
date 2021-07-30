@@ -1,11 +1,12 @@
-global-include *.txt
+prune .tox
+include *.py
 include *.txt
 include *.rst
-include tox.ini
-include .coveragerc
-include .travis.yml
 include buildout.cfg
-recursive-include src/z3c/baseregistry *.rst *.zcml
-
-# added by check_manifest.py
-include *.py
+include setup.cfg
+include .coveragerc
+include tox.ini
+include .travis.yml
+recursive-include src *.pt
+recursive-include src *.rst
+recursive-include src *.zcml
