@@ -51,7 +51,7 @@ tests_require = [
 
 setup (
     name="z3c.baseregistry",
-    version='2.1.0.dev0',
+    version='2.1.0',
     author="Stephan Richter, Roger Ineichen and the Zope Community",
     author_email="zope-dev@zope.org",
     description="Manage IComponents instances using Python code and ZCML.",
