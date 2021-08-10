@@ -85,7 +85,7 @@ setup (
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
-        'Framework :: Zope3'
+        'Framework :: Zope :: 3'
     ],
     url='http://github.com/zopefoundation/z3c.baseregistry',
     packages=find_packages('src'),
