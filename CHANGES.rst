@@ -1,15 +1,17 @@
-=======
-CHANGES
-=======
+=========
+ CHANGES
+=========
 
-2.1.1 (unreleased)
-------------------
+2.2.0 (unreleased)
+==================
 
-- Nothing changed yet.
+- Add support for Python 3.7.
+
+- Drop support for Python 3.3.
 
 
 2.1.0 (2017-05-03)
-------------------
+==================
 
 - Add support for Python 3.4, 3.5, 3.6 and PyPy.
 
@@ -18,7 +20,7 @@ CHANGES
 
 
 2.0.0 (2012-11-17)
-------------------
+==================
 
 - zope.configuration changed action tuples to action dicts. This version works
   with the new action dict given from zope.configuration since version 3.8.0.
@@ -27,7 +29,7 @@ CHANGES
 
 
 1.3.0 (2010-10-28)
-------------------
+==================
 
 - Fundamental change in the way how baseregistry hooks into ZCA.
   Now it uses hooks.setSite, which requires that zope.component hooks
@@ -38,13 +40,13 @@ CHANGES
 
 
 1.2.0 (2009-12-27)
-------------------
+==================
 
 - Moved browser dependencies to zmi extras
 
 
 1.1.0 (2009-03-19)
-------------------
+==================
 
 - Fix base registry management form failure in case, when a site has its
   parent's local site manager (that isn't registered as utility) in its
@@ -56,6 +58,6 @@ CHANGES
 
 
 1.0.0 (2008-01-24)
-------------------
+==================
 
 - Initial Release

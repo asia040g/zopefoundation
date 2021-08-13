@@ -117,7 +117,7 @@ However, when reading the jar, we get an error:
 This is because we have not registered the registry in its parent as an
 ``IComponents`` utility, yet:
 
-  >>> from zope.component.interfaces import IComponents
+  >>> from zope.interface.interfaces import IComponents
   >>> zope.component.provideUtility(myRegistry, IComponents, 'myRegistry')
 
   >>> pickle.loads(jar)
@@ -549,8 +549,8 @@ benefit.
   ... ''', context=context)
   ... except Exception as e:
   ...     print(e)
-  File...
-      ConfigurationError: Nested ``registerIn`` directives are not permitted.
+  Nested ``registerIn`` directives are not permitted.
+      File...
 
 Cleanup
 ~~~~~~~

@@ -49,7 +49,7 @@ tests_require = [
     'webtest',
 ]
 
-setup (
+setup(
     name="z3c.baseregistry",
     version='2.1.1.dev0',
     author="Stephan Richter, Roger Ineichen and the Zope Community",
@@ -76,10 +76,10 @@ setup (
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Natural Language :: English',
@@ -87,7 +87,7 @@ setup (
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope :: 3'
     ],
-    url='http://github.com/zopefoundation/z3c.baseregistry',
+    url='https://github.com/zopefoundation/z3c.baseregistry',
     packages=find_packages('src'),
     include_package_data=True,
     package_dir={'': 'src'},
@@ -101,11 +101,11 @@ setup (
     tests_require=tests_require,
     install_requires=[
         'setuptools',
-        'zope.component[hook,zcml] >= 4.3.0',
-        'zope.configuration >= 4.1.0',
+        'zope.component[hook,zcml] >= 4.5.0',
+        'zope.configuration >= 4.3.0',
         'zope.i18nmessageid >= 2.2',
         'zope.interface',
-        'zope.schema',
+        'zope.schema >= 4.9.0',
         'zope.site',
     ],
     zip_safe=False,
