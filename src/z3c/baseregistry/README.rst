@@ -172,7 +172,7 @@ we can register the registry:
   ...
   ...   <utility
   ...       component="README.custom"
-  ...       provides="zope.component.interfaces.IComponents"
+  ...       provides="zope.interface.interfaces.IComponents"
   ...       name="custom" />
   ...
   ... </configure>
