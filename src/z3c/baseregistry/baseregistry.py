@@ -15,10 +15,11 @@
 
 """
 __docformat__ = "reStructuredText"
-from zope.component import globalregistry, interfaces
+from zope.component import globalregistry
+from zope.interface.interfaces import IComponents
 
 def BC(components, name):
-    return components.getUtility(interfaces.IComponents, name)
+    return components.getUtility(IComponents, name)
 
 class BaseComponents(globalregistry.BaseGlobalComponents):
     """An ``IComponents`` implementation that serves as base for other
