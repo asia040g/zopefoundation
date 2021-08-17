@@ -59,7 +59,7 @@ setup(
         read('README.rst')
         + '\n\n' +
         'Detailed Documentation\n'
-        '**********************'
+        '======================'
         + '\n\n' +
         read('src', 'z3c', 'baseregistry', 'README.rst')
         + '\n\n' +
