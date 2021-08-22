@@ -5,7 +5,9 @@
 2.2.1 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Add support for Python 3.8.
+
+- Drop support for Python 3.4.
 
 
 2.2.0 (2018-10-19)
