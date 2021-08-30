@@ -16,44 +16,45 @@ import unittest
 
 from z3c.baseregistry import zcml
 
+
 class TestActionsProxy(unittest.TestCase):
 
-    def _makeOne(self, l=None):
-        l = l or []
-        return l, zcml.ActionsProxy(l, self)
+    def _makeOne(self, list_=None):
+        list_ = list_ or []
+        return list_, zcml.ActionsProxy(list_, self)
 
     def test_set_decorates(self):
-        l, proxy = self._makeOne(['abc'])
+        list_, proxy = self._makeOne(['abc'])
         proxy[0] = {'discriminator': 'foo'}
-        self.assertEqual([{'discriminator': (self, 'foo')}], l)
+        self.assertEqual([{'discriminator': (self, 'foo')}], list_)
 
     def test_slice_decorates(self):
-        l, proxy = self._makeOne(['abc'])
+        list_, proxy = self._makeOne(['abc'])
         proxy[:] = [{'discriminator': 'foo'}]
-        self.assertEqual([{'discriminator': (self, 'foo')}], l)
+        self.assertEqual([{'discriminator': (self, 'foo')}], list_)
 
     def test_iadd_decorates(self):
-        l, proxy = self._makeOne()
+        list_, proxy = self._makeOne()
         proxy += [{'discriminator': 'foo'}]
-        self.assertEqual([{'discriminator': (self, 'foo')}], l)
+        self.assertEqual([{'discriminator': (self, 'foo')}], list_)
 
     def test_insert_decorates(self):
-        l, proxy = self._makeOne(['abc'])
+        list_, proxy = self._makeOne(['abc'])
         proxy.insert(0, {'discriminator': 'foo'})
-        self.assertEqual([{'discriminator': (self, 'foo')}, 'abc'], l)
+        self.assertEqual([{'discriminator': (self, 'foo')}, 'abc'], list_)
 
     def test_extend_decotares(self):
-        l, proxy = self._makeOne(['abc'])
+        list_, proxy = self._makeOne(['abc'])
         proxy.extend(({'discriminator': 'foo'},))
-        self.assertEqual(['abc', {'discriminator': (self, 'foo')}], l)
+        self.assertEqual(['abc', {'discriminator': (self, 'foo')}], list_)
 
     def test_proxy(self):
-        l, proxy = self._makeOne()
-        self.assertEqual(l.index, proxy.index)
+        list_, proxy = self._makeOne()
+        self.assertEqual(list_.index, proxy.index)
 
     def test_len(self):
-        l, proxy = self._makeOne(['abc'])
-        self.assertEqual(len(l), len(proxy))
+        list_, proxy = self._makeOne(['abc'])
+        self.assertEqual(len(list_), len(proxy))
         self.assertEqual(1, len(proxy))
 
 

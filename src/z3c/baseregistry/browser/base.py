@@ -59,6 +59,7 @@ class BaseComponentsVocabulary(SimpleVocabulary):
 
         super(BaseComponentsVocabulary, self).__init__(terms)
 
+
 class IComponentsBases(zope.interface.Interface):
     """An interface describing the bases API of the IComponents object."""
 

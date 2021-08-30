@@ -189,7 +189,7 @@
 
   <utility
       component=".tests.custom"
-      provides="zope.component.interfaces.IComponents"
+      provides="zope.interface.interfaces.IComponents"
       name="custom" />
 
   <utility component=".tests.example1" />

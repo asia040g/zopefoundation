@@ -16,9 +16,11 @@
 import os
 from setuptools import setup, find_packages
 
+
 def read(*rnames):
     with open(os.path.join(os.path.dirname(__file__), *rnames)) as f:
         return f.read()
+
 
 tests_require = [
     'zope.app.appsetup',
@@ -64,7 +66,7 @@ setup(
         read('src', 'z3c', 'baseregistry', 'README.rst')
         + '\n\n' +
         read('CHANGES.rst')
-        ),
+    ),
     license="ZPL 2.1",
     keywords="zope3 z3c component global registry baseregistry",
     classifiers=[
@@ -80,6 +82,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Natural Language :: English',

@@ -5,7 +5,9 @@
 2.2.1 (unreleased)
 ==================
 
-- Add support for Python 3.8.
+- Add support for Python 3.8 and 3.9.
+
+- Make tests compatible with ``zope.component >= 5``.
 
 - Drop support for Python 3.4.
 

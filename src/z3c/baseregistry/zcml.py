@@ -98,10 +98,12 @@ class FakeBaseRegistrySite(object):
     def getSiteManager(self):
         return self.sm
 
+
 def setActiveRegistry(context, registry):
     context.original = zope.component.hooks.getSite()
     fakeSite = FakeBaseRegistrySite(registry)
     zope.component.hooks.setSite(fakeSite)
+
 
 def resetOriginalRegistry(context):
     zope.component.hooks.setSite(context.original)
@@ -110,7 +112,7 @@ def resetOriginalRegistry(context):
 class RegisterIn(zope.configuration.config.GroupingContextDecorator):
 
     # Marker that this directive has been used in the path
-    registryChanged=True
+    registryChanged = True
 
     # Storage for the original site
     original = None
@@ -129,11 +131,11 @@ class RegisterIn(zope.configuration.config.GroupingContextDecorator):
             discriminator=None,
             callable=setActiveRegistry,
             args=(self, self.registry)
-            )
+        )
 
     def after(self):
         self.context.action(
             discriminator=None,
             callable=resetOriginalRegistry,
             args=(self,)
-            )
+        )

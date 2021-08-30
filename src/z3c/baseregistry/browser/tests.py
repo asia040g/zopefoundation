@@ -41,13 +41,16 @@ custom = baseregistry.BaseComponents(
 class IExample(zope.interface.Interface):
     name = zope.interface.Attribute('Name of Example')
 
+
 @zope.interface.implementer(IExample)
 class Example(object):
 
     def __init__(self, name):
         self.name = name
+
     def __repr__(self):
-        return '<%s %r>' %(self.__class__.__name__, self.name)
+        return '<%s %r>' % (self.__class__.__name__, self.name)
+
 
 example1 = Example('example1')
 example2 = Example('example2')
@@ -61,7 +64,7 @@ def addBasesSelection(browser, bases):
     from zope.testbrowser.browser import ListControl
 
     form = browser.getForm('zc.page.browser_form')
-    webtest_form = form._form # XXX: Private API
+    webtest_form = form._form  # XXX: Private API
 
     # Create the select tag
     webtest_select = MultipleSelect(webtest_form, None,
@@ -83,6 +86,7 @@ def addBasesSelection(browser, bases):
     select = ListControl(webtest_select, form, 'select', browser)
     form.controls.append(select)
 
+
 @implementer(IBrowserPublisher)
 class ManagementViewSelector(BrowserView):
     """View that selects the first available management view.
@@ -103,7 +107,8 @@ class ManagementViewSelector(BrowserView):
         if not redirect_url.lower().startswith(('../', 'javascript:', '++')):
             self.request.response.redirect(redirect_url)
             return u''
-        raise AssertionError("Should not get here") # pragma: no cover
+        raise AssertionError("Should not get here")  # pragma: no cover
+
 
 class LoginLogout(object):
     # Dummy implementation of zope.app.security.browser.auth.LoginLogout
@@ -111,11 +116,14 @@ class LoginLogout(object):
     def __call__(self):
         return None
 
+
 class _Z3CRegistryLayer(TestBrowserLayer,
                         BrowserLayer):
     pass
 
+
 Z3CRegistryLayer = _Z3CRegistryLayer(z3c_browser)
+
 
 def test_suite():
 
@@ -134,6 +142,7 @@ def test_suite():
     readme.layer = Z3CRegistryLayer
     suite = unittest.TestSuite((readme,))
     return suite
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
